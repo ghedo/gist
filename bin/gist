@@ -1,0 +1,109 @@
+#!/usr/bin/perl
+
+use File::Basename;
+use WWW::GitHub::Gist;
+
+use strict;
+use warnings;
+
+=head1 NAME
+
+gist - GitHub Gist creator
+
+=cut
+
+=head1 SYNOPSIS
+
+ gist FILE [EXTENSION]
+
+ Examples:
+   $ gist script.pl    # Make gist extract the file extension
+   $ gist script .pl   # Explicitly set file extension
+
+=cut
+
+my $usage = <<END;
+gist FILE [EXTENSION]
+
+See 'perldoc gist' for more information.
+END
+
+die $usage if $#ARGV < 0;
+
+my $login	= $ENV{GITHUB_USER} || `git config github.user`;
+my $token	= $ENV{GITHUB_TOKEN} || `git config github.token`;
+
+chomp $login; chomp $token;
+
+if (!$login) {
+	print STDERR "Enter username: ";
+	chop($login = <STDIN>);
+}
+
+if (!$token) {
+	print STDERR "Enter token for '$login': ";
+	system('stty','-echo') if $^O eq 'linux';
+	chop($login = <STDIN>);
+	system('stty','echo') if $^O eq 'linux';
+	print "\n";
+}
+
+my $file	= $ARGV[0];
+my $ext		= $ARGV[1];
+
+open(FILE, $file) or die "Err: Enter a valid file name.\n";
+my $data = join('', <FILE>);
+close FILE;
+
+my $basename	= basename($file);
+
+if (!$ext) {
+	$ext	= ".".($basename =~ m/([^.]+)$/)[0];
+	print "Info: Found '$ext' extension for the given script.\n";
+}
+
+my $gist = WWW::GitHub::Gist -> new(
+	user	=> $login,
+	token	=> $token
+);
+
+$gist -> add_file($basename, $data, $ext);
+my $repo = $gist -> create() -> {'repo'};
+
+print "Gist $repo successfully created.\n";
+print "Public Clone URL: git://gist.github.com/$repo.git\n";
+print "Private Clone URL: git\@gist.github.com:$repo.git\n";
+
+=head1 CONFIGURATION
+
+The login username and the API token can be set via the GITHUB_USER and
+GITHUB_TOKEN environment variables. If not set, will be used the
+values of C<github.user> and C<github.token> from the Git configuration.
+To set them, type:
+
+    $ git config --global github.user LoginName
+    $ git config --global github.token GitHubToken
+
+If neither C<github.user> and C<github.token> are set, the login name and
+the API token will be asked interactively to the user.
+
+=head1 TOKEN
+
+The API token can be found on the C<Account Settings> page on GitHub.
+Visit the url: L<https://github.com/account>
+
+=head1 AUTHOR
+
+Alessandro Ghedini <alexbio@cpan.org>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2011 Alessandro Ghedini.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of either: the GNU General Public License as published
+by the Free Software Foundation; or the Artistic License.
+
+See http://dev.perl.org/licenses/ for more information.
+
+=cut
