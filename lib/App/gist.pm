@@ -1,11 +1,14 @@
 package App::gist;
 
+use File::Basename;
+use WWW::GitHub::Gist;
+
 use warnings;
 use strict;
 
 =head1 NAME
 
-App::gist - Module to do something
+App::gist - GitHub Gist creator
 
 =head1 SYNOPSIS
 
@@ -13,7 +16,78 @@ Synopsis section
 
     use App::gist;
 
-    ...
+    use warnings;
+    use strict;
+
+    use feature 'say';
+
+    say 'Created gist: '.App::gist -> new($file, $extension) -> run;
+
+=cut
+
+sub new {
+	my ($class, $file, $ext) = @_;
+
+	my $login	= $ENV{GITHUB_USER} || `git config github.user`;
+	my $token	= $ENV{GITHUB_TOKEN} || `git config github.token`;
+
+	chomp $login; chomp $token;
+
+	my $opts = {
+		'file'  => $file,
+		'ext'   => $ext,
+		'login' => $login,
+		'token' => $token
+	};
+
+	return bless $opts, $class;
+}
+
+sub run {
+	my $self = shift;
+
+	my ($login, $token, $ext);
+
+	if (!$self -> {'login'}) {
+		print STDERR "Enter username: ";
+		chop($login = <STDIN>);
+	} else {
+		$login = $self -> {'login'};
+	}
+
+	if (!$self -> {'token'}) {
+		print STDERR "Enter token for '$login': ";
+		system('stty','-echo') if $^O eq 'linux';
+		chop($login = <STDIN>);
+		system('stty','echo') if $^O eq 'linux';
+		print "\n";
+	} else {
+		$token = $self -> {'token'};
+	}
+
+	open(FILE, $self -> {'file'}) or die "Err: Enter a valid file name.\n";
+	my $data = join('', <FILE>);
+	close FILE;
+
+	my $basename	= basename($self -> {'file'});
+
+	if (!$self -> {'ext'}) {
+		$ext	= ".".($basename =~ m/([^.]+)$/)[0];
+		print "Info: Found '$ext' extension for the given script.\n";
+	} else {
+		$ext = $self -> {'ext'};
+	}
+
+	my $gist = WWW::GitHub::Gist -> new(
+		user	=> $login,
+		token	=> $token
+	);
+
+	$gist -> add_file($basename, $data, $ext);
+	my $repo = $gist -> create -> {'repo'};
+
+	return $repo;
+}
 
 =head1 AUTHOR
 

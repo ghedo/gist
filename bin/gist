@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
-use File::Basename;
-use WWW::GitHub::Gist;
+use App::gist;
 
 use strict;
 use warnings;
@@ -30,49 +29,11 @@ END
 
 die $usage if $#ARGV < 0;
 
-my $login	= $ENV{GITHUB_USER} || `git config github.user`;
-my $token	= $ENV{GITHUB_TOKEN} || `git config github.token`;
+my $gist = App::gist -> new(@ARGV) -> run;
 
-chomp $login; chomp $token;
-
-if (!$login) {
-	print STDERR "Enter username: ";
-	chop($login = <STDIN>);
-}
-
-if (!$token) {
-	print STDERR "Enter token for '$login': ";
-	system('stty','-echo') if $^O eq 'linux';
-	chop($login = <STDIN>);
-	system('stty','echo') if $^O eq 'linux';
-	print "\n";
-}
-
-my $file	= $ARGV[0];
-my $ext		= $ARGV[1];
-
-open(FILE, $file) or die "Err: Enter a valid file name.\n";
-my $data = join('', <FILE>);
-close FILE;
-
-my $basename	= basename($file);
-
-if (!$ext) {
-	$ext	= ".".($basename =~ m/([^.]+)$/)[0];
-	print "Info: Found '$ext' extension for the given script.\n";
-}
-
-my $gist = WWW::GitHub::Gist -> new(
-	user	=> $login,
-	token	=> $token
-);
-
-$gist -> add_file($basename, $data, $ext);
-my $repo = $gist -> create() -> {'repo'};
-
-print "Gist $repo successfully created.\n";
-print "Public Clone URL: git://gist.github.com/$repo.git\n";
-print "Private Clone URL: git\@gist.github.com:$repo.git\n";
+print "Gist $gist successfully created.\n";
+print "Public Clone URL: git://gist.github.com/$gist.git\n";
+print "Private Clone URL: git\@gist.github.com:$gist.git\n";
 
 =head1 CONFIGURATION
 
