@@ -14,14 +14,19 @@ App::gist - GitHub Gist creator
 
 Synopsis section
 
+    use feature 'say';
     use App::gist;
 
     use warnings;
     use strict;
 
-    use feature 'say';
-
     say 'Created gist: '.App::gist -> new($file, $extension) -> run;
+
+=head1 METHODS
+
+=head2 new( $file, $extension )
+
+Create a App::gist object using the given file and its extension.
 
 =cut
 
@@ -42,6 +47,12 @@ sub new {
 
 	return bless $opts, $class;
 }
+
+=head2 run( )
+
+Just run the app.
+
+=cut
 
 sub run {
 	my $self = shift;
