@@ -1,5 +1,6 @@
 package App::gist;
 
+use Getopt::Long;
 use File::Basename;
 use WWW::GitHub::Gist;
 
@@ -38,11 +39,18 @@ sub new {
 
 	chomp $login; chomp $token;
 
+	my $update;
+
+	GetOptions(
+		"update=i" => \$update
+	);
+
 	my $opts = {
-		'file'  => $file,
-		'ext'   => $ext,
-		'login' => $login,
-		'token' => $token
+		'file'    => $file,
+		'ext'     => $ext,
+		'login'   => $login,
+		'token'   => $token,
+		'gist'    => $update
 	};
 
 	return bless $opts, $class;
@@ -57,7 +65,7 @@ Just run the app.
 sub run {
 	my $self = shift;
 
-	my ($login, $token, $ext);
+	my ($login, $token, $ext, $gist);
 
 	if (!$self -> {'login'}) {
 		print STDERR "Enter username: ";
@@ -89,15 +97,27 @@ sub run {
 		$ext = $self -> {'ext'};
 	}
 
-	my $gist = WWW::GitHub::Gist -> new(
-		user	=> $login,
-		token	=> $token
-	);
+	if ($self -> {'gist'}) {
+		$gist = WWW::GitHub::Gist -> new(
+			id	=> $self -> {'gist'},
+			user	=> $login,
+			token	=> $token
+		);
 
-	$gist -> add_file($basename, $data, $ext);
-	my $repo = $gist -> create -> {'repo'};
+		$gist -> add_file($basename, $data, $ext);
+		$gist -> update;
 
-	return $repo;
+		return $self -> {'gist'}
+	} else {
+		$gist = WWW::GitHub::Gist -> new(
+			user	=> $login,
+			token	=> $token
+		);
+
+		$gist -> add_file($basename, $data, $ext);
+
+		return $gist -> create -> {'repo'};
+	}
 }
 
 =head1 AUTHOR

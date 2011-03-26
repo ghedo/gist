@@ -13,7 +13,10 @@ gist - GitHub Gist creator
 
 =head1 SYNOPSIS
 
- gist FILE [EXTENSION]
+ gist [OPTIONS] FILE [EXTENSION]
+
+ Options:
+   --update, -u GIST_ID
 
  Examples:
    $ gist script.pl    # Make gist extract the file extension
@@ -34,6 +37,16 @@ my $gist = App::gist -> new(@ARGV) -> run;
 print "Gist $gist successfully created.\n";
 print "Public Clone URL: git://gist.github.com/$gist.git\n";
 print "Private Clone URL: git\@gist.github.com:$gist.git\n";
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--update>, B<-u> GIST_ID
+
+Update the given gist (identified by GIST_ID), with the given file.
+
+=back
 
 =head1 CONFIGURATION
 
