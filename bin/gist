@@ -17,6 +17,7 @@ gist - GitHub Gist creator
 
  Options:
    --update, -u GIST_ID
+   --private, -p
 
  Examples:
    $ gist script.pl    # Make gist extract the file extension
@@ -32,10 +33,12 @@ END
 
 die $usage if $#ARGV < 0;
 
-my $gist = App::gist -> new(@ARGV) -> run;
+my $app = App::gist -> new(@ARGV);
+
+my $gist = $app -> run;
 
 print "Gist $gist successfully created.\n";
-print "Public Clone URL: git://gist.github.com/$gist.git\n";
+print "Public Clone URL: git://gist.github.com/$gist.git\n" unless $app -> {'private'};
 print "Private Clone URL: git\@gist.github.com:$gist.git\n";
 
 =head1 OPTIONS
@@ -45,6 +48,10 @@ print "Private Clone URL: git\@gist.github.com:$gist.git\n";
 =item B<--update>, B<-u> GIST_ID
 
 Update the given gist (identified by GIST_ID), with the given file.
+
+=item B<--private>, B<-p>
+
+Create a private gist.
 
 =back
 

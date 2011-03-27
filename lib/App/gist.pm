@@ -39,10 +39,11 @@ sub new {
 
 	chomp $login; chomp $token;
 
-	my $update;
+	my ($update, $private);
 
 	GetOptions(
-		"update=i" => \$update
+		'update=i'    => \$update,
+		'private'     => \$private
 	);
 
 	my $opts = {
@@ -50,7 +51,8 @@ sub new {
 		'ext'     => $ext,
 		'login'   => $login,
 		'token'   => $token,
-		'gist'    => $update
+		'gist'    => $update,
+		'private' => $private
 	};
 
 	return bless $opts, $class;
@@ -116,7 +118,9 @@ sub run {
 
 		$gist -> add_file($basename, $data, $ext);
 
-		return $gist -> create -> {'repo'};
+		return $gist -> create(
+			private => $self -> {'private'}
+		) -> {'repo'};
 	}
 }
 
