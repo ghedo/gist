@@ -1,6 +1,5 @@
 package App::gist;
 
-use Getopt::Long;
 use File::Basename;
 use WWW::GitHub::Gist;
 
@@ -32,27 +31,20 @@ Create a App::gist object using the given file and its extension.
 =cut
 
 sub new {
-	my ($class, $file, $ext) = @_;
+	my ($class, $args, $file, $ext) = @_;
 
 	my $login	= $ENV{GITHUB_USER} || `git config github.user`;
 	my $token	= $ENV{GITHUB_TOKEN} || `git config github.token`;
 
 	chomp $login; chomp $token;
 
-	my ($update, $private);
-
-	GetOptions(
-		'update=i'    => \$update,
-		'private'     => \$private
-	);
-
 	my $opts = {
 		'file'    => $file,
 		'ext'     => $ext,
 		'login'   => $login,
 		'token'   => $token,
-		'gist'    => $update,
-		'private' => $private
+		'gist'    => $args -> {'update'},
+		'private' => $args -> {'private'}
 	};
 
 	return bless $opts, $class;
