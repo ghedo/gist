@@ -18,7 +18,8 @@ gist - GitHub Gist creator
  gist [OPTIONS] FILE [EXTENSION]
 
  Options:
-   --update, -u GIST_ID
+   --description DESCRIPTION
+   --update, -u  GIST_ID
    --private, -p
 
  Examples:
@@ -55,7 +56,7 @@ print "Private Clone URL: git\@gist.github.com:$gist.git\n";
 
 =over 4
 
-=item B<--description>, B<-d>
+=item B<--description>, B<-d> DESCRIPTION
 
 Set the description for the gist.
 
