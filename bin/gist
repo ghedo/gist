@@ -39,7 +39,8 @@ my %args;
 
 GetOptions(\%args,
 	'update=i',
-	'private'
+	'private',
+	'description=s'
 );
 
 my $app = App::gist -> new(\%args, @ARGV);
@@ -53,6 +54,10 @@ print "Private Clone URL: git\@gist.github.com:$gist.git\n";
 =head1 OPTIONS
 
 =over 4
+
+=item B<--description>, B<-d>
+
+Set the description for the gist.
 
 =item B<--update>, B<-u> GIST_ID
 

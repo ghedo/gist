@@ -39,12 +39,13 @@ sub new {
 	chomp $login; chomp $token;
 
 	my $opts = {
-		'file'    => $file,
-		'ext'     => $ext,
-		'login'   => $login,
-		'token'   => $token,
-		'gist'    => $args -> {'update'},
-		'private' => $args -> {'private'}
+		'file'        => $file,
+		'ext'         => $ext,
+		'login'       => $login,
+		'token'       => $token,
+		'gist'        => $args -> {'update'},
+		'private'     => $args -> {'private'},
+		'description' => $args -> {'description'}
 	};
 
 	return bless $opts, $class;
@@ -111,7 +112,8 @@ sub run {
 		$gist -> add_file($basename, $data, $ext);
 
 		return $gist -> create(
-			private => $self -> {'private'}
+			private => $self -> {'private'},
+			description => $self -> {'description'}
 		) -> {'repo'};
 	}
 }
