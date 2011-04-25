@@ -18,9 +18,9 @@ gist - GitHub Gist creator
  gist [OPTIONS] FILE
 
  Options:
-   --extension, -e  EXTENSION
-   --description    DESCRIPTION
-   --update, -u     GIST_ID
+   --extension, -e    EXTENSION
+   --description, -d  DESCRIPTION
+   --update, -u       GIST_ID
    --private, -p
 
  Examples:
