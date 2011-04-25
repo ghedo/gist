@@ -38,8 +38,22 @@ sub new {
 
 	chomp $login; chomp $token;
 
+	my ($name, $data);
+
+	if ($file) {
+		open(FILE, $file) or die "Err: Enter a valid file name.\n";
+		$data = join('', <FILE>);
+		close FILE;
+
+		$name = basename($file);
+	} else {
+		$name = 'gistfile.txt';
+		$data = join('', <STDIN>);
+	}
+
 	my $opts = {
-		'file'        => $file,
+		'name'        => $name,
+		'data'        => $data,
 		'login'       => $login,
 		'token'       => $token,
 		'ext'         => $args -> {'extension'},
@@ -62,6 +76,9 @@ sub run {
 
 	my ($login, $token, $ext, $gist);
 
+	my $data = $self -> {'data'};
+	my $basename = $self -> {'name'};
+
 	if (!$self -> {'login'}) {
 		print STDERR "Enter username: ";
 		chop($login = <STDIN>);
@@ -79,13 +96,7 @@ sub run {
 		$token = $self -> {'token'};
 	}
 
-	open(FILE, $self -> {'file'}) or die "Err: Enter a valid file name.\n";
-	my $data = join('', <FILE>);
-	close FILE;
-
-	my $basename	= basename($self -> {'file'});
-
-	if (!$self -> {'ext'}) {
+	if (!$self -> {'ext'} and defined $basename) {
 		$ext	= ".".($basename =~ m/([^.]+)$/)[0];
 		print "Info: Found '$ext' extension for the given script.\n";
 	} else {

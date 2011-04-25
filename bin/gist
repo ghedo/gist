@@ -26,21 +26,14 @@ gist - GitHub Gist creator
  Examples:
    $ gist script.pl       # Make gist extract the file extension
    $ gist script -e .pl   # Explicitly set file extension
+   $ cat script | gist    # Take file content from STDIN
 
 =cut
-
-my $usage = <<END;
-gist FILE [EXTENSION]
-
-See 'perldoc gist' for more information.
-END
-
-die $usage if $#ARGV < 0;
 
 my %args;
 
 GetOptions(\%args,
-	'extension=s'
+	'extension=s',
 	'update=i',
 	'private',
 	'description=s'
