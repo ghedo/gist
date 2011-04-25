@@ -15,16 +15,17 @@ gist - GitHub Gist creator
 
 =head1 SYNOPSIS
 
- gist [OPTIONS] FILE [EXTENSION]
+ gist [OPTIONS] FILE
 
  Options:
-   --description DESCRIPTION
-   --update, -u  GIST_ID
+   --extension, -e  EXTENSION
+   --description    DESCRIPTION
+   --update, -u     GIST_ID
    --private, -p
 
  Examples:
-   $ gist script.pl    # Make gist extract the file extension
-   $ gist script .pl   # Explicitly set file extension
+   $ gist script.pl       # Make gist extract the file extension
+   $ gist script -e .pl   # Explicitly set file extension
 
 =cut
 
@@ -39,6 +40,7 @@ die $usage if $#ARGV < 0;
 my %args;
 
 GetOptions(\%args,
+	'extension=s'
 	'update=i',
 	'private',
 	'description=s'
