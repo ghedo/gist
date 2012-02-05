@@ -3,8 +3,8 @@ package App::gist;
 use File::Basename;
 use WWW::GitHub::Gist::v3;
 
-use warnings;
 use strict;
+use warnings;
 
 =head1 NAME
 
@@ -12,21 +12,19 @@ App::gist - GitHub Gist creator
 
 =head1 SYNOPSIS
 
-Synopsis section
-
     use feature 'say';
     use App::gist;
 
-    use warnings;
     use strict;
+    use warnings;
 
-    say 'Created gist: '.App::gist -> new($file) -> run;
+    say 'Created gist: ' . App::gist -> new($file) -> run;
 
 =head1 METHODS
 
 =head2 new( $file )
 
-Create a App::gist object using the given file and its extension.
+Create a App::gist object using the given file.
 
 =cut
 
@@ -55,7 +53,7 @@ sub new {
 		'name'        => $name,
 		'data'        => $data,
 		'login'       => $login,
-		'passwd'       => $passwd,
+		'passwd'      => $passwd,
 		'gist'        => $args -> {'update'},
 		'private'     => $args -> {'private'},
 		'description' => $args -> {'description'}
