@@ -18,23 +18,20 @@ gist - GitHub Gist creator
  gist [OPTIONS] FILE
 
  Options:
-   --extension, -e    EXTENSION
    --description, -d  DESCRIPTION
    --update, -u       GIST_ID
    --private, -p
 
  Examples:
-   $ gist script.pl       # Make gist extract the file extension
-   $ gist script -e .pl   # Explicitly set file extension
-   $ cat script | gist    # Take file content from STDIN
+   $ gist script.pl
+   $ cat script | gist
 
 =cut
 
 my %args;
 
 GetOptions(\%args,
-	'extension=s',
-	'update=i',
+	'update=s',
 	'private',
 	'description=s'
 );
@@ -43,9 +40,9 @@ my $app = App::gist -> new(\%args, @ARGV);
 
 my $gist = $app -> run;
 
-print "Gist $gist successfully created.\n";
-print "Public Clone URL: git://gist.github.com/$gist.git\n" unless $app -> {'private'};
-print "Private Clone URL: git\@gist.github.com:$gist.git\n";
+print "Gist " . $gist -> {'id'} . " successfully created.\n";
+print "Public Clone URL: " . $gist -> {'git_pull_url'} . "\n" unless $app -> {'private'};
+print "Private Clone URL: " . $gist -> {'git_push_url'} . "\n";
 
 =head1 OPTIONS
 
@@ -68,20 +65,16 @@ Create a private gist.
 =head1 CONFIGURATION
 
 The login username and the API token can be set via the GITHUB_USER and
-GITHUB_TOKEN environment variables. If not set, will be used the
-values of C<github.user> and C<github.token> from the Git configuration.
+GITHUB_PASSWD environment variables. If not set, will be used the
+values of C<github.user> and C<github.password> from the Git configuration.
+
 To set them, type:
 
     $ git config --global github.user LoginName
-    $ git config --global github.token GitHubToken
+    $ git config --global github.password GitHubPassword
 
-If neither C<github.user> and C<github.token> are set, the login name and
-the API token will be asked interactively to the user.
-
-=head1 TOKEN
-
-The API token can be found on the C<Account Settings> page on GitHub.
-Visit the url: L<https://github.com/account>
+If C<github.user> or C<github.password> are not set, the login name and
+the password will be asked interactively to the user.
 
 =head1 AUTHOR
 
