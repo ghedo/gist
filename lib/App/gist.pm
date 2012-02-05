@@ -34,9 +34,9 @@ sub new {
 	my ($class, $args, $file) = @_;
 
 	my $login	= $ENV{GITHUB_USER}   || `git config github.user`;
-	my $token	= $ENV{GITHUB_PASSWD} || `git config github.password`;
+	my $passwd	= $ENV{GITHUB_PASSWD} || `git config github.password`;
 
-	chomp $login; chomp $token;
+	chomp $login; chomp $passwd;
 
 	my ($name, $data);
 
@@ -55,7 +55,7 @@ sub new {
 		'name'        => $name,
 		'data'        => $data,
 		'login'       => $login,
-		'token'       => $token,
+		'passwd'       => $passwd,
 		'gist'        => $args -> {'update'},
 		'private'     => $args -> {'private'},
 		'description' => $args -> {'description'}
@@ -73,7 +73,7 @@ Just run the app.
 sub run {
 	my $self = shift;
 
-	my ($login, $token, $gist);
+	my ($login, $passwd, $gist);
 
 	my $data = $self -> {'data'};
 	my $basename = $self -> {'name'};
@@ -85,21 +85,21 @@ sub run {
 		$login = $self -> {'login'};
 	}
 
-	if (!$self -> {'token'}) {
-		print STDERR "Enter token for '$login': ";
+	if (!$self -> {'passwd'}) {
+		print STDERR "Enter password for '$login': ";
 		system('stty','-echo') if $^O eq 'linux';
-		chop($login = <STDIN>);
+		chop($passwd = <STDIN>);
 		system('stty','echo') if $^O eq 'linux';
 		print "\n";
 	} else {
-		$token = $self -> {'token'};
+		$passwd = $self -> {'passwd'};
 	}
 
 	if ($self -> {'gist'}) {
 		$gist = WWW::GitHub::Gist::v3 -> new(
 			id		=> $self -> {'gist'},
 			user		=> $login,
-			password	=> $token
+			password	=> $passwd
 		);
 
 		return $gist -> edit(
@@ -108,7 +108,7 @@ sub run {
 	} else {
 		$gist = WWW::GitHub::Gist::v3 -> new(
 			user		=> $login,
-			password	=> $token
+			password	=> $passwd
 		);
 
 		return $gist -> create(

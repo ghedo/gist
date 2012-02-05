@@ -64,7 +64,7 @@ Create a private gist.
 
 =head1 CONFIGURATION
 
-The login username and the API token can be set via the GITHUB_USER and
+The login username and the password can be set via the GITHUB_USER and
 GITHUB_PASSWD environment variables. If not set, will be used the
 values of C<github.user> and C<github.password> from the Git configuration.
 
