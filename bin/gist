@@ -41,10 +41,9 @@ my $app = App::gist -> new(\%args, @ARGV);
 my $gist = $app -> run;
 
 print "Gist " . $gist -> {'id'} . " successfully created.\n";
-if (!$app -> {'private'}) {
-	print "HTML URL: " . $gist -> {'html_url'} . "\n";
-	print "Public Clone URL: " . $gist -> {'git_pull_url'} . "\n";
-}
+print "HTML URL: " . $gist -> {'html_url'} . "\n";
+print "Public Clone URL: " . $gist -> {'git_pull_url'} . "\n"
+	unless $app -> {'private'};
 print "Private Clone URL: " . $gist -> {'git_push_url'} . "\n";
 
 =head1 OPTIONS
