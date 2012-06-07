@@ -1,10 +1,13 @@
 package App::gist;
 
-use File::Basename;
-use WWW::GitHub::Gist::v3;
-
 use strict;
 use warnings;
+
+use base qw(App::Cmd::Simple);
+
+use File::Basename;
+use WWW::GitHub::Gist::v3;
+use Class::Load qw(try_load_class);
 
 =head1 NAME
 
@@ -28,13 +31,23 @@ Create a App::gist object using the given file.
 
 =cut
 
-sub new {
-	my ($class, $args, $file) = @_;
+sub opt_spec {
+	return (
+		["description|d=s", "set the description for the gist"         ],
+		["update|u=s",      "update the given gist with the given file"],
+		["private|p",       "create a private gist"                    ]
+	);
+}
 
-	my $login	= $ENV{GITHUB_USER}   || `git config github.user`;
-	my $passwd	= $ENV{GITHUB_PASSWD} || `git config github.password`;
+sub execute {
+	my ($self, $opt, $args) = @_;
 
-	chomp $login; chomp $passwd;
+	my ($login, $passwd) = $self -> _get_credentials;
+
+	my $id		= $opt -> {'update'};
+	my $file	= $args -> [0];
+	my $description	= $opt -> {'description'};
+	my $public	= $opt -> {'private'} ? 0 : 1;
 
 	my ($name, $data);
 
@@ -49,72 +62,90 @@ sub new {
 		$data = join('', <STDIN>);
 	}
 
-	my $opts = {
-		'name'        => $name,
-		'data'        => $data,
-		'login'       => $login,
-		'passwd'      => $passwd,
-		'gist'        => $args -> {'update'},
-		'private'     => $args -> {'private'},
-		'description' => $args -> {'description'}
-	};
+	my $gist = WWW::GitHub::Gist::v3 -> new(
+		user		=> $login,
+		password	=> $passwd
+	);
 
-	return bless $opts, $class;
+	my $info = $id					?
+		_edit_gist($gist, $id, $name, $data)	:
+		_create_gist($gist, $name, $data, $description, $public);
+
+	print "Gist " . $info -> {'id'} . " successfully created/modified.\n";
+	print "Web URL: " . $info -> {'html_url'} . "\n";
+	print "Public Clone URL: " . $info -> {'git_pull_url'} . "\n"
+		if $public;
+	print "Private Clone URL: " . $info -> {'git_push_url'} . "\n";
 }
 
-=head2 run( )
+sub _create_gist {
+	my ($gist, $name, $data, $description, $public) = @_;
 
-Just run the app.
+	return $gist -> create(
+		description => $description, public => $public,
+		files => { $name => $data }
+	);
+}
 
-=cut
+sub _edit_gist {
+	my ($gist, $id, $name, $data) = @_;
 
-sub run {
-	my $self = shift;
+	$gist -> id($id);
 
-	my ($login, $passwd, $gist);
+	return $gist -> edit(files => { $name => $data });
+}
 
-	my $data = $self -> {'data'};
-	my $basename = $self -> {'name'};
+sub _get_credentials {
+	my ($self) = @_;
 
-	if (!$self -> {'login'}) {
-		print STDERR "Enter username: ";
-		chop($login = <STDIN>);
+	my ($login, $pass, $token);
+
+	my %identity = Config::Identity::GitHub -> load
+		if try_load_class('Config::Identity::GitHub');
+
+	if (%identity) {
+		$login = $identity{'login'};
 	} else {
-		$login = $self -> {'login'};
+		$login = `git config github.user`;  chomp $login;
 	}
 
-	if (!$self -> {'passwd'}) {
+	if (!$login) {
+		my $error = %identity ?
+			"Err: missing value 'user' in ~/.github" :
+			"Err: Missing value 'github.user' in git config";
+
+		$self -> log($error);
+		return;
+	}
+
+	if (%identity) {
+		$token = $identity{'token'};
+		$pass  = $identity{'password'};
+	} else {
+		$token = `git config github.token`;    chomp $token;
+		$pass  = `git config github.password`; chomp $pass;
+	}
+
+	if ($token) {
+		$self -> log("Err: Login with GitHub token is deprecated");
+		return (undef, undef);
+	} elsif (!$pass) {
+		require Term::ReadKey;
+
 		print STDERR "Enter password for '$login': ";
-		system('stty','-echo') if $^O eq 'linux';
-		chop($passwd = <STDIN>);
-		system('stty','echo') if $^O eq 'linux';
+		Term::ReadKey::ReadMode('noecho');
+		chop($pass = <STDIN>);
+		Term::ReadKey::ReadMode('normal');
 		print "\n";
-	} else {
-		$passwd = $self -> {'passwd'};
 	}
 
-	if ($self -> {'gist'}) {
-		$gist = WWW::GitHub::Gist::v3 -> new(
-			id		=> $self -> {'gist'},
-			user		=> $login,
-			password	=> $passwd
-		);
+	return ($login, $pass);
+}
 
-		return $gist -> edit(
-			files => { $basename => $data }
-		);
-	} else {
-		$gist = WWW::GitHub::Gist::v3 -> new(
-			user		=> $login,
-			password	=> $passwd
-		);
+sub log {
+	my ($self, $msg) = @_;
 
-		return $gist -> create(
-			description => $self -> {'description'},
-			public => $self -> {'private'} ? 0 : 1,
-			files => { $basename => $data }
-		);
-	}
+	print STDERR "$msg\n";
 }
 
 =head1 AUTHOR

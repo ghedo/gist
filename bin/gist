@@ -1,11 +1,9 @@
 #!/usr/bin/perl
 
-use App::gist;
-
-use Getopt::Long;
-
 use strict;
 use warnings;
+
+use App::gist;
 
 =head1 NAME
 
@@ -28,23 +26,7 @@ gist - GitHub Gist creator
 
 =cut
 
-my %args;
-
-GetOptions(\%args,
-	'update=s',
-	'private',
-	'description=s'
-);
-
-my $app = App::gist -> new(\%args, @ARGV);
-
-my $gist = $app -> run;
-
-print "Gist " . $gist -> {'id'} . " successfully created.\n";
-print "Web URL: " . $gist -> {'html_url'} . "\n";
-print "Public Clone URL: " . $gist -> {'git_pull_url'} . "\n"
-	unless $app -> {'private'};
-print "Private Clone URL: " . $gist -> {'git_push_url'} . "\n";
+App::gist -> run;
 
 =head1 OPTIONS
 
