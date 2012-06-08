@@ -15,19 +15,12 @@ App::gist - GitHub Gist creator
 
 =head1 SYNOPSIS
 
-    use feature 'say';
     use App::gist;
 
     use strict;
     use warnings;
 
-    say 'Created gist: ' . App::gist -> new($file) -> run;
-
-=head1 METHODS
-
-=head2 new( $file )
-
-Create a App::gist object using the given file.
+    App::gist -> run;
 
 =cut
 
