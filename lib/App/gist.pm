@@ -29,7 +29,7 @@ sub opt_spec {
 		["description|d=s", "set the description for the gist"         ],
 		["update|u=s",      "update the given gist with the given file"],
 		["private|p",       "create a private gist"                    ],
-		["quiet|q",         "only output the web url"                  ]
+		["web|w",           "only output the web url"                  ]
 	);
 }
 
@@ -42,7 +42,7 @@ sub execute {
 	my $file	= $args -> [0];
 	my $description	= $opt -> {'description'};
 	my $public	= $opt -> {'private'} ? 0 : 1;
-	my $quiet	= $opt -> {'quiet'} ? 1 : 0;
+	my $web		= $opt -> {'web'} ? 1 : 0;
 
 	my ($name, $data);
 
@@ -67,7 +67,7 @@ sub execute {
 		_create_gist($gist, $name, $data, $description, $public);
 
 
-	if ($quiet) {
+	if ($web) {
 		print $info -> {'html_url'} . "\n";
  	} else {
 		print "Gist " . $info -> {'id'} . " successfully created/modified.\n";
