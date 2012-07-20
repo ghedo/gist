@@ -19,10 +19,13 @@ gist - GitHub Gist creator
    --description, -d  DESCRIPTION
    --update, -u       GIST_ID
    --private, -p
+   --web, -w
 
  Examples:
    $ gist script.pl
    $ cat script | gist
+   $ echo "something" | gist -w | xclip
+   $ echo "something" | gist -w | pbcopy # on Mac OS X
 
 =cut
 
@@ -43,6 +46,10 @@ Update the given gist (identified by GIST_ID), with the given file.
 =item B<--private>, B<-p>
 
 Create a private gist.
+
+=item B<--web>, B<-w>
+
+Only output the web url.
 
 =back
 
