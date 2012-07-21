@@ -55,17 +55,19 @@ Only output the web url.
 
 =head1 CONFIGURATION
 
-The login username and the password can be set via the GITHUB_USER and
-GITHUB_PASSWD environment variables. If not set, will be used the
-values of C<github.user> and C<github.password> from the Git configuration.
-
-To set them, type:
+Configure git with your GitHub credentials:
 
     $ git config --global github.user LoginName
     $ git config --global github.password GitHubPassword
 
-If C<github.user> or C<github.password> are not set, the login name and
-the password will be asked interactively to the user.
+Alternatively you can install L<Config::Identity> and write your credentials
+in the (optionally GPG-encrypted) C<~/.github> file as follows:
+
+    login LoginName
+    password GitHubpassword
+
+If non of these are set, the login name and the password will be asked
+interactively to the user.
 
 =head1 AUTHOR
 
