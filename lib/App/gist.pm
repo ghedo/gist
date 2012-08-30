@@ -69,7 +69,7 @@ sub execute {
 
 	if ($web) {
 		print $info -> {'html_url'} . "\n";
- 	} else {
+	} else {
 		print "Gist " . $info -> {'id'} . " successfully created/modified.\n";
 		print "Web URL: " . $info -> {'html_url'} . "\n";
 		print "Public Clone URL: " . $info -> {'git_pull_url'} . "\n"
