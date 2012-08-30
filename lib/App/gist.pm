@@ -92,7 +92,12 @@ sub _edit_gist {
 
 	$gist -> id($id);
 
-	return $gist -> edit(files => { $name => $data });
+	my $info = $gist -> show;
+
+	return $gist -> edit(
+		description => $info -> {'description'},
+		files       => { $name => $data }
+	);
 }
 
 sub _get_credentials {
