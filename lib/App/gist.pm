@@ -11,7 +11,7 @@ use Class::Load qw(try_load_class);
 
 =head1 NAME
 
-App::gist - GitHub Gist creator
+App::gist - Command-line GitHub's gist client
 
 =head1 SYNOPSIS
 
