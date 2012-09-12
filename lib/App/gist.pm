@@ -6,7 +6,7 @@ use warnings;
 use base qw(App::Cmd::Simple);
 
 use File::Basename;
-use WWW::GitHub::Gist::v3;
+use WWW::GitHub::Gist;
 use Class::Load qw(try_load_class);
 
 =head1 NAME
