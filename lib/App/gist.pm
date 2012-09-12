@@ -57,7 +57,7 @@ sub execute {
 		$data = join('', <STDIN>);
 	}
 
-	my $gist = WWW::GitHub::Gist::v3 -> new(
+	my $gist = WWW::GitHub::Gist -> new(
 		user		=> $login,
 		password	=> $passwd
 	);
