@@ -7,7 +7,7 @@ use App::gist;
 
 =head1 NAME
 
-gist - GitHub Gist creator
+gist - Gist command-line tool
 
 =cut
 
@@ -15,15 +15,18 @@ gist - GitHub Gist creator
 
  gist [OPTIONS] FILE
 
- Options:
-   --description, -d  DESCRIPTION
-   --update, -u       GIST_ID
-   --private, -p
-   --web, -w
+=over
 
- Examples:
+=item Create a new gist from a file
+
    $ gist script.pl
-   $ cat script | gist
+
+=item Create a new gist from a pipe with a description
+
+   $ cat script | gist -d 'some script'
+
+=item Create a new gist and copy the web URL in the clipboard
+
    $ echo "something" | gist -w | xclip
    $ echo "something" | gist -w | pbcopy # on Mac OS X
 

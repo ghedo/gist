@@ -11,16 +11,11 @@ use Class::Load qw(try_load_class);
 
 =head1 NAME
 
-App::gist - Command-line GitHub's gist client
+App::gist - Gist command-line tool
 
 =head1 SYNOPSIS
 
-    use App::gist;
-
-    use strict;
-    use warnings;
-
-    App::gist -> run;
+   $ gist script.pl
 
 =cut
 
