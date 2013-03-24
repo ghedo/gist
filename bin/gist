@@ -30,6 +30,8 @@ gist - Gist command-line tool
    $ echo "something" | gist -w | xclip
    $ echo "something" | gist -w | pbcopy # on Mac OS X
 
+=back
+
 =cut
 
 App::gist -> run;
