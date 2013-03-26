@@ -81,7 +81,7 @@ sub execute {
 		_create_gist($gist, $name, $data, $description, $public);
 
 	if ($web) {
-		print $info -> {'html_url'} . "\n";
+		print $info -> content -> {'html_url'} . "\n";
 	} else {
 		print "Gist " . $info -> content -> {'id'} . " successfully created/modified.\n";
 		print "Web URL: " . $info -> content -> {'html_url'} . "\n";
