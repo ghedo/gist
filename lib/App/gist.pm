@@ -45,10 +45,10 @@ App::gist - Gist command-line tool
 
 sub opt_spec {
 	return (
-		["description|d=s", "set the description for the gist"         ],
-		["update|u=s",      "update the given gist with the given file"],
-		["private|p",       "create a private gist"                    ],
-		["web|w",           "only output the web url"                  ]
+		['description|d=s', 'set the description for the gist'         ],
+		['update|u=s',      'update the given gist with the given file'],
+		['private|p',       'create a private gist'                    ],
+		['web|w',           'only output the web url'                  ]
 	);
 }
 
@@ -80,14 +80,18 @@ sub execute {
 		_edit_gist($gist, $id, $name, $data)	:
 		_create_gist($gist, $name, $data, $description, $public);
 
+	my $gist_id  = $info -> content -> {'id'};
+	my $html_url = $info -> content -> {'html_url'};
+	my $pull_url = $info -> content -> {'git_pull_url'};
+	my $push_url = $info -> content -> {'git_push_url'};
+
 	if ($web) {
-		print $info -> content -> {'html_url'} . "\n";
+		print "$html_url\n";
 	} else {
-		print "Gist " . $info -> content -> {'id'} . " successfully created/modified.\n";
-		print "Web URL: " . $info -> content -> {'html_url'} . "\n";
-		print "Public Clone URL: " . $info -> content -> {'git_pull_url'} . "\n"
-			if $public;
-		print "Private Clone URL: " . $info -> content -> {'git_push_url'} . "\n";
+		print "Gist '$gist_id' successfully created/updated.\n";
+		print "Web URL: $html_url\n";
+		print "Public Clone URL: $pull_url\n" if $public;
+		print "Private Clone URL: $push_url\n";
 	}
 }
 
@@ -136,7 +140,7 @@ sub _get_credentials {
 			"Err: missing value 'user' in ~/.github" :
 			"Err: Missing value 'github.user' in git config";
 
-		die "$error\n";
+		die "$error.\n";
 	}
 
 	if (%identity) {
@@ -148,7 +152,7 @@ sub _get_credentials {
 	}
 
 	if ($token) {
-		die "Err: Login with GitHub token is deprecated\n";
+		die "Err: Login with GitHub token is deprecated.\n";
 	} elsif (!$pass) {
 		require Term::ReadKey;
 
