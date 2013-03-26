@@ -80,6 +80,9 @@ sub execute {
 		_edit_gist($gist, $id, $name, $data)	:
 		_create_gist($gist, $name, $data, $description, $public);
 
+	die "Err: " . $info -> content -> {'message'} . ".\n"
+		unless $info -> success;
+
 	my $gist_id  = $info -> content -> {'id'};
 	my $html_url = $info -> content -> {'html_url'};
 	my $pull_url = $info -> content -> {'git_pull_url'};
@@ -111,6 +114,9 @@ sub _edit_gist {
 	my ($gist, $id, $name, $data) = @_;
 
 	my $info = $gist -> get(gist_id => $id);
+
+	die "Err: " . $info -> content -> {'message'} . ".\n"
+		unless $info -> success;
 
 	return $gist -> update(
 		gist_id => $id,
