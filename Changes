@@ -2,6 +2,8 @@ Revision history for App-gist
 
 {{$NEXT}}
 
+ - Add --name option
+
 0.15      2013-03-26 17:10:16 Europe/Rome
 
  - Switch to Pithub
