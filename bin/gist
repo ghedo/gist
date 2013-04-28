@@ -23,7 +23,7 @@ gist - Gist command-line tool
 
 =item Create a new gist from a pipe with a description
 
-   $ cat script | gist -d 'some script'
+   $ cat script.pl | gist -d 'some script' -n script.pl
 
 =item Create a new gist and copy the web URL in the clipboard
 
@@ -43,6 +43,10 @@ App::gist -> run;
 =item B<--description>, B<-d> DESCRIPTION
 
 Set the description for the gist.
+
+=item B<--name>, B<-n> NAME
+
+Specify the name of the file (useful when using a pipe).
 
 =item B<--update>, B<-u> GIST_ID
 

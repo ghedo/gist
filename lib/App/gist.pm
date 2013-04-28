@@ -46,6 +46,7 @@ App::gist - Gist command-line tool
 sub opt_spec {
 	return (
 		['description|d=s', 'set the description for the gist'         ],
+		['name|n=s',        'specify the name of the file'             ],
 		['update|u=s',      'update the given gist with the given file'],
 		['private|p',       'create a private gist'                    ],
 		['web|w',           'only output the web url'                  ]
@@ -70,7 +71,7 @@ sub execute {
 
 		$name = basename($file);
 	} else {
-		$name = 'gistfile.txt';
+		$name = $opt -> {'name'} || 'gistfile.txt';
 		$data = join('', <STDIN>);
 	}
 
