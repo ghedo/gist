@@ -53,6 +53,13 @@ sub opt_spec {
 	);
 }
 
+sub validate_args {
+	my ($self, $opt, $args) = @_;
+
+	$self -> usage_error("Too few arguments.")
+		unless %$opt || @$args || ! -t STDIN;
+}
+
 sub execute {
 	my ($self, $opt, $args) = @_;
 
